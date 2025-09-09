@@ -1,0 +1,163 @@
+<style>
+    /* Custom Scrollbar */
+    .custom-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #4f46e5, #9333ea);
+        border-radius: 10px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-track {
+        background: #1f2937;
+    }
+
+    /* Enhanced Sidebar Styles */
+    .sidebar-bg {
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        height: 100% position: relative;
+        overflow: hidden;
+    }
+
+    .sidebar-bg::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        z-index: 0;
+    }
+
+    .sidebar-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .sidebar-item {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-item::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: linear-gradient(180deg, #6366f1, #9333ea);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar-item:hover::before {
+        transform: scaleY(1);
+    }
+
+    .sidebar-item:hover {
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .sidebar-item.active {
+        background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1));
+        border-left: 3px solid #6366f1;
+    }
+
+    .sidebar-item.active::before {
+        transform: scaleY(1);
+    }
+
+    .profile-card {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-card:hover {
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .logo-gradient {
+        background: linear-gradient(90deg, #6366f1, #9333ea);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .sidebar-icon {
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-item:hover .sidebar-icon {
+        transform: translateX(3px);
+    }
+
+    .sidebar-dropdown {
+        background: rgba(15, 23, 42, 0.6);
+        border-left: 1px dashed rgba(99, 102, 241, 0.3);
+        margin-left: 1rem;
+    }
+
+    .logout-btn {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+        transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        background: linear-gradient(90deg, #dc2626, #b91c1c);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Enhanced sidebar scrollbar */
+    .sidebar-nav::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.5);
+        border-radius: 10px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #6366f1, #9333ea);
+        border-radius: 10px;
+    }
+
+    .sidebar-nav::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #818cf8, #a78bfa);
+    }
+
+    /* Active Menu Highlight */
+    .active-link {
+        background: linear-gradient(90deg, #4f46e5, #9333ea);
+        color: #fff !important;
+        box-shadow: 0 0 12px rgba(147, 51, 234, 0.5);
+    }
+
+    .active-link i {
+        color: #fff !important;
+    }
+
+    /* Dropdown Animation */
+    .dropdown {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .dropdown.hidden {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+
+    .dropdown.open {
+        max-height: 500px;
+        opacity: 1;
+    }
+</style>
