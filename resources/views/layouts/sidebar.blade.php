@@ -85,6 +85,11 @@
                             data-page="pending-users">
                             Pending Users
                         </a>
+                        <a href="{{ route('admin.approved.users') }}"
+                            class="block px-3 py-2 rounded-lg transition-all duration-300 nav-link {{ request()->routeIs('admin.approved.users') ? 'active-link' : '' }}"
+                            data-page="approved-users">
+                            Approve User
+                        </a>
                         <!-- All Users -->
                         <a href="{{ route('admin.users') }}"
                             class="block px-3 py-2 rounded-lg transition-all duration-300 nav-link {{ request()->routeIs('admin.users') ? 'active-link' : '' }}"

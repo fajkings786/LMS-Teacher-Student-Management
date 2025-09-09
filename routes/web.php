@@ -19,6 +19,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/profile/update-picture', [ProfileController::class, 'updatePicture'])->name('profile.updatePicture');
+Route::middleware(['auth', 'role:Admin'])->get('/admin/approved-users', [AuthController::class, 'approved'])->name('admin.approved.users');
 
 // Dashboard route - using auth middleware
 Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard')->middleware('auth');

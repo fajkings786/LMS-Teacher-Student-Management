@@ -181,55 +181,64 @@
 
       const handleLogout = async () => {
         try {
-          // First get CSRF cookie
-          await fetch("/sanctum/csrf-cookie", {
-            credentials: "include",
-          });
+          // Check if Laravel logout form exists (dashboard page)
+          const logoutForm = document.getElementById("logout-form");
 
-          // Get the CSRF token from the meta tag
-          const csrfToken = document
-            .querySelector('meta[name="csrf-token"]')
-            ?.getAttribute("content");
+          if (logoutForm) {
+            // Clear frontend storage
+            localStorage.clear();
+            sessionStorage.clear();
 
-          // Call logout API endpoint
-          const response = await fetch("/logout", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-TOKEN": csrfToken || "",
-            },
-            credentials: "include",
-          });
+            // Reset user profile
+            userProfile.value = {
+              name: "",
+              email: "",
+              role: "",
+              status: "",
+              picture: null,
+            };
 
-          const data = await response.json();
+            // Force update
+            forceUpdateKey.value += 1;
 
-          // Clear all storage
-          localStorage.clear();
-          sessionStorage.clear();
+            // Close menus
+            closeAllMenus();
 
-          // Reset user profile
-          userProfile.value = {
-            name: "",
-            email: "",
-            role: "",
-            status: "",
-            picture: null,
-          };
+            // Submit Laravel logout form
+            logoutForm.submit();
+          } else {
+            // Standard API logout for non-dashboard pages
+            await fetch("/sanctum/csrf-cookie", {
+              credentials: "include",
+            });
 
-          // Force update
-          forceUpdateKey.value += 1;
+            const csrfToken = document
+              .querySelector('meta[name="csrf-token"]')
+              ?.getAttribute("content");
 
-          // Close menus
-          closeAllMenus();
+            const response = await fetch("/logout", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-TOKEN": csrfToken || "",
+              },
+              credentials: "include",
+            });
 
-          // Redirect to home page
-          window.location.href = data.redirect || "/";
+            const data = await response.json();
+
+            // Clear storage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect
+            window.location.href = data.redirect || "/";
+          }
         } catch (error) {
           console.error("Logout failed:", error);
-
-          // Even if the API call fails, clear all storage and redirect
+          // Fallback logout
           localStorage.clear();
           sessionStorage.clear();
           window.location.href = "/";
@@ -316,8 +325,9 @@
       // Listen for storage changes
       const handleStorageChange = (event) => {
         console.log("Storage change event:", event); // Debug log
-        if (event.key === "userData") {
-          loadUserData();
+        if (event.key === "userData" && event.newValue === null) {
+          // User logged out in another tab
+          window.location.href = "/login";
         }
       };
 

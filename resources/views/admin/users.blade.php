@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="p-6 bg-white shadow-lg rounded-lg">
+    <div class="p-6 bg-white shadow-lg rounded-lg ml-96">
         <h2 class="text-2xl font-bold mb-4">Manage Users</h2>
 
         @if (session('success'))
@@ -10,7 +10,7 @@
             </div>
         @endif
 
-        <table class="w-full border-collapse border border-gray-300">
+        <table class="w-full border-collapse border  border-gray-300">
             <thead>
                 <tr class="bg-gray-100">
                     <th class="border p-2">Name</th>
