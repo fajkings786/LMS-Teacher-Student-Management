@@ -375,7 +375,7 @@
                                     class="block px-3 py-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-all duration-300 nav-link">
                                     Pending Users
                                 </a>
-                                <a href="{{ route('admin.pending.approve', ['id' => $user->id]) }}"
+                                <a href="{{ route('admin.approved.users', ['id' => $user->id]) }}"
                                     class="block px-3 py-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-all duration-300 nav-link">
                                     Approve User
                                 </a>

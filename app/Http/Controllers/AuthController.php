@@ -107,15 +107,11 @@ class AuthController extends Controller
     // ✅ Logout - Updated for session authentication
     public function logout(Request $request)
     {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return response()->json(['redirect' => '/']);
+        Auth::logout();                     // Laravel logout
+        $request->session()->invalidate();  // Session clear
+        $request->session()->regenerateToken(); // CSRF token regenerate
+        return redirect('/'); // Home pe redirect
     }
-
-
     // ✅ Approved Users List
     public function approved()
     {
