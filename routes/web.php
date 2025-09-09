@@ -38,6 +38,12 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
     Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
 });
 
+// routes/web.php
+Route::get('/api/auth/check', function () {
+    return response()->json(['authenticated' => auth()->check()]);
+})->middleware('web');
+
+
 // Course routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/courses/create', [CourseController::class, 'create'])->name('add.course');

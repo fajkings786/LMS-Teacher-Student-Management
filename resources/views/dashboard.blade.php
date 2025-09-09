@@ -727,295 +727,280 @@
 
     <!-- Scripts -->
     <!-- Scripts -->
-    <script>
-        // Update date and time
-        function updateDateTime() {
-            const now = new Date();
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            document.getElementById('currentDate').textContent = now.toLocaleDateString(undefined, options);
-            document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+<script>
+    // Update date and time
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+        document.getElementById('currentDate').textContent = now.toLocaleDateString(undefined, options);
+        document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+    
+    // Dropdown Toggle
+    function toggleDropdown(id) {
+        const dropdowns = document.querySelectorAll('.dropdown');
+        const icons = document.querySelectorAll('[id$="Icon"]');
+        dropdowns.forEach(d => {
+            const relatedIcon = document.getElementById(d.id + "Icon");
+            if (d.id !== id) {
+                d.classList.remove('open');
+                d.classList.add('hidden');
+                if (relatedIcon) relatedIcon.classList.remove('rotate-180');
+            }
+        });
+        const dropdown = document.getElementById(id);
+        const icon = document.getElementById(id + "Icon");
+        const isOpen = dropdown.classList.contains('open');
+        if (isOpen) {
+            dropdown.classList.remove('open');
+            dropdown.classList.add('hidden');
+            icon.classList.remove('rotate-180');
+        } else {
+            dropdown.classList.remove('hidden');
+            dropdown.classList.add('open');
+            icon.classList.add('rotate-180');
         }
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-
-        // Dropdown Toggle
-        function toggleDropdown(id) {
-            const dropdowns = document.querySelectorAll('.dropdown');
-            const icons = document.querySelectorAll('[id$="Icon"]');
-            dropdowns.forEach(d => {
-                const relatedIcon = document.getElementById(d.id + "Icon");
-                if (d.id !== id) {
-                    d.classList.remove('open');
-                    d.classList.add('hidden');
-                    if (relatedIcon) relatedIcon.classList.remove('rotate-180');
+    }
+    
+    // Handle logout functionality
+    function handleLogout() {
+        const logoutForm = document.getElementById('logout-form');
+        const logoutBtn = document.querySelector('.logout-btn');
+        
+        // Show loading state
+        logoutBtn.disabled = true;
+        logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+        
+        // Clear localStorage and sessionStorage
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Submit the logout form using fetch
+        fetch(logoutForm.action, {
+            method: 'POST',
+            body: new FormData(logoutForm),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Logout successful:', data);
+            // Redirect to home page
+            window.location.href = '/';
+        })
+        .catch(error => {
+            console.error('Logout error:', error);
+            // Even if there's an error, redirect to home
+            window.location.href = '/';
+        });
+    }
+    
+    // Add event listener to logout button
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutBtn = document.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+    });
+    
+    // Initialize Chart.js charts
+    document.addEventListener('DOMContentLoaded', function() {
+        // User Distribution Chart
+        const userDistributionCtx = document.getElementById('userDistributionChart');
+        if (userDistributionCtx) {
+            new Chart(userDistributionCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Admin', 'Teacher', 'Student'],
+                    datasets: [{
+                        data: [5, 25, 90],
+                        backgroundColor: ['#8B5CF6', '#3B82F6', '#10B981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: "#fff",
+                                font: {
+                                    size: 10
+                                },
+                                padding: 10
+                            }
+                        }
+                    }
                 }
             });
-            const dropdown = document.getElementById(id);
-            const icon = document.getElementById(id + "Icon");
-            const isOpen = dropdown.classList.contains('open');
-            if (isOpen) {
-                dropdown.classList.remove('open');
-                dropdown.classList.add('hidden');
-                icon.classList.remove('rotate-180');
-            } else {
-                dropdown.classList.remove('hidden');
-                dropdown.classList.add('open');
-                icon.classList.add('rotate-180');
-            }
         }
-
-        // Handle logout functionality
-        function handleLogout() {
-            const logoutForm = document.getElementById('logout-form');
-            const logoutBtn = document.querySelector('.logout-btn');
-
-            // Show loading state
-            logoutBtn.disabled = true;
-            logoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
-
-            // Clear all storage
-            localStorage.clear();
-            sessionStorage.clear();
-
-            // Submit the logout form using fetch
-            fetch(logoutForm.action, {
-                    method: 'POST',
-                    body: new FormData(logoutForm),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    credentials: 'same-origin'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Logout successful:', data);
-
-                    // Dispatch logout event to notify other components
-                    window.dispatchEvent(new CustomEvent('userLoggedOut'));
-
-                    // Redirect to home page
-                    window.location.href = data.redirect || '/';
-                })
-                .catch(error => {
-                    console.error('Logout error:', error);
-
-                    // Even if there's an error, dispatch logout event and redirect
-                    window.dispatchEvent(new CustomEvent('userLoggedOut'));
-                    window.location.href = '/';
-                });
-        }
-
-        // Add event listener to logout button
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutBtn = document.querySelector('.logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', handleLogout);
-            }
-        });
-
-
-        // Add event listener to logout button
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutBtn = document.querySelector('.logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', handleLogout);
-            }
-        });
-
-        // Initialize Chart.js charts
-        document.addEventListener('DOMContentLoaded', function() {
-            // User Distribution Chart
-            const userDistributionCtx = document.getElementById('userDistributionChart');
-            if (userDistributionCtx) {
-                new Chart(userDistributionCtx.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Admin', 'Teacher', 'Student'],
-                        datasets: [{
-                            data: [5, 25, 90],
-                            backgroundColor: ['#8B5CF6', '#3B82F6', '#10B981'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: "#fff",
-                                    font: {
-                                        size: 10
-                                    },
-                                    padding: 10
-                                }
+        
+        // Course Categories Chart
+        const courseCategoriesCtx = document.getElementById('courseCategoriesChart');
+        if (courseCategoriesCtx) {
+            new Chart(courseCategoriesCtx.getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Science', 'Math', 'Arts', 'Language'],
+                    datasets: [{
+                        data: [12, 8, 10, 5],
+                        backgroundColor: ['#6366F1', '#10B981', '#F59E0B', '#EF4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: "#fff",
+                                font: {
+                                    size: 10
+                                },
+                                padding: 10
                             }
                         }
                     }
-                });
-            }
-
-            // Course Categories Chart
-            const courseCategoriesCtx = document.getElementById('courseCategoriesChart');
-            if (courseCategoriesCtx) {
-                new Chart(courseCategoriesCtx.getContext('2d'), {
-                    type: 'pie',
-                    data: {
-                        labels: ['Science', 'Math', 'Arts', 'Language'],
-                        datasets: [{
-                            data: [12, 8, 10, 5],
-                            backgroundColor: ['#6366F1', '#10B981', '#F59E0B', '#EF4444'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: "#fff",
-                                    font: {
-                                        size: 10
-                                    },
-                                    padding: 10
-                                }
-                            }
+                }
+            });
+        }
+        
+        // Attendance Chart
+        const attendanceCtx = document.getElementById('attendanceChart');
+        if (attendanceCtx) {
+            new Chart(attendanceCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                    datasets: [{
+                        label: 'Attendance',
+                        data: [85, 92, 78, 88, 95],
+                        backgroundColor: '#3B82F6',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
                         }
-                    }
-                });
-            }
-
-            // Attendance Chart
-            const attendanceCtx = document.getElementById('attendanceChart');
-            if (attendanceCtx) {
-                new Chart(attendanceCtx.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-                        datasets: [{
-                            label: 'Attendance',
-                            data: [85, 92, 78, 88, 95],
-                            backgroundColor: '#3B82F6',
-                            borderWidth: 0,
-                            borderRadius: 4
-                        }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: "#aaa",
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            grid: {
                                 display: false
                             }
                         },
-                        scales: {
-                            x: {
-                                ticks: {
-                                    color: "#aaa",
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                grid: {
-                                    display: false
+                        y: {
+                            ticks: {
+                                color: "#aaa",
+                                font: {
+                                    size: 10
                                 }
                             },
-                            y: {
-                                ticks: {
-                                    color: "#aaa",
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                grid: {
-                                    color: "rgba(255, 255, 255, 0.1)"
-                                }
+                            grid: {
+                                color: "rgba(255, 255, 255, 0.1)"
                             }
                         }
                     }
-                });
-            }
-
-            // Performance Chart
-            const performanceCtx = document.getElementById('performanceChart');
-            if (performanceCtx) {
-                new Chart(performanceCtx.getContext('2d'), {
-                    type: 'radar',
-                    data: {
-                        labels: ['Speed', 'Reliability', 'Comfort', 'Safety', 'Efficiency'],
-                        datasets: [{
-                            label: 'Current',
-                            data: [85, 90, 78, 92, 88],
-                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                            borderColor: '#6366F1',
-                            borderWidth: 2,
-                            pointBackgroundColor: '#6366F1'
-                        }, {
-                            label: 'Target',
-                            data: [90, 95, 85, 95, 92],
-                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                            borderColor: '#10B981',
-                            borderWidth: 2,
-                            pointBackgroundColor: '#10B981'
-                        }]
+                }
+            });
+        }
+        
+        // Performance Chart
+        const performanceCtx = document.getElementById('performanceChart');
+        if (performanceCtx) {
+            new Chart(performanceCtx.getContext('2d'), {
+                type: 'radar',
+                data: {
+                    labels: ['Speed', 'Reliability', 'Comfort', 'Safety', 'Efficiency'],
+                    datasets: [{
+                        label: 'Current',
+                        data: [85, 90, 78, 92, 88],
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: '#6366F1',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#6366F1'
+                    }, {
+                        label: 'Target',
+                        data: [90, 95, 85, 95, 92],
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        borderColor: '#10B981',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#10B981'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: "#fff",
+                                font: {
+                                    size: 10
+                                },
+                                padding: 10
+                            }
+                        }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: "#fff",
-                                    font: {
-                                        size: 10
-                                    },
-                                    padding: 10
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: "rgba(255, 255, 255, 0.1)"
+                            },
+                            grid: {
+                                color: "rgba(255, 255, 255, 0.1)"
+                            },
+                            pointLabels: {
+                                color: "#aaa",
+                                font: {
+                                    size: 10
                                 }
-                            }
-                        },
-                        scales: {
-                            r: {
-                                angleLines: {
-                                    color: "rgba(255, 255, 255, 0.1)"
-                                },
-                                grid: {
-                                    color: "rgba(255, 255, 255, 0.1)"
-                                },
-                                pointLabels: {
-                                    color: "#aaa",
-                                    font: {
-                                        size: 10
-                                    }
-                                },
-                                ticks: {
-                                    color: "#aaa",
-                                    backdropColor: 'transparent',
-                                    font: {
-                                        size: 8
-                                    }
+                            },
+                            ticks: {
+                                color: "#aaa",
+                                backdropColor: 'transparent',
+                                font: {
+                                    size: 8
                                 }
                             }
                         }
                     }
-                });
-            }
-        });
-    </script>
+                }
+            });
+        }
+    });
+</script>
 
     <!-- Vue Navbar App -->
     <script src="{{ asset('js/navbar.js') }}"></script>

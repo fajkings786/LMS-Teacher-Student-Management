@@ -23,7 +23,7 @@ const routes = [
     { path: "/Course", name: "Course", component: Course },
     { path: "/courses/create", name: "createCourse", component: CreateCourse },
     { path: "/contact", name: "contact", component: Contact },
-    { path: "/courses", name: "courses", component: Lectures }, // Add this line
+    { path: "/courses", name: "courses", component: Lectures },
     {
         path: "/forgot-password",
         name: "ForgotPassword",
@@ -44,7 +44,6 @@ const routes = [
     {
         path: "/dashboard",
         name: "Dashboard",
-        // Remove component property to let Laravel handle it
         beforeEnter() {
             // Redirect to Laravel dashboard route
             window.location.href = "/dashboard";

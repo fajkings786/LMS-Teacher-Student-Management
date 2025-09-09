@@ -112,13 +112,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Return a JSON response for AJAX requests
-        if ($request->expectsJson()) {
-            return response()->json(['message' => 'Logged out successfully']);
-        }
-
-        // For non-AJAX requests, redirect to home
-        return redirect('/');
+        return response()->json(['redirect' => '/']);
     }
 
 

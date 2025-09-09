@@ -23,3 +23,8 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/results', [ResultController::class, 'index']);
     Route::post('/results', [ResultController::class, 'store']);
 });
+
+// routes/web.php
+Route::get('/api/auth/check', function () {
+    return response()->json(['authenticated' => auth()->check()]);
+})->middleware('web');

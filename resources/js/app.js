@@ -5,7 +5,6 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { api } from "./utils/axios"; // Import the configured axios instance
 import router from "./router";
-
 // Existing components
 import RegisterForm from "./components/RegisterForm.vue";
 import LoginForm from "./components/LoginForm.vue";
