@@ -41,12 +41,21 @@ const routes = [
         component: ResetPassword,
         props: (route) => ({ email: route.query.email }),
     },
+    // router/index.js
     {
         path: "/dashboard",
         name: "Dashboard",
-        beforeEnter() {
-            // Redirect to Laravel dashboard route
-            window.location.href = "/dashboard";
+        beforeEnter: (to, from, next) => {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem("userData") !== null;
+
+            if (!isLoggedIn) {
+                // If not logged in, redirect to login
+                next("/Login");
+            } else {
+                // If logged in, redirect to Laravel dashboard
+                window.location.href = "/dashboard";
+            }
         },
     },
 ];

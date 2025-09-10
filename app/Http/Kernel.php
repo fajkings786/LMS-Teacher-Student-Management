@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Http;
+
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+
 class Kernel extends HttpKernel
 {
     /**
@@ -61,5 +64,9 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\EnsureRole::class, // Fixed this line
+        'auth.verify' => \App\Http\Middleware\VerifyAuthentication::class,
+        'dashboard.protect' => \App\Http\Middleware\DashboardProtection::class,
+        'force.dashboard.auth' => \App\Http\Middleware\ForceDashboardAuthentication::class,
+        'strict.dashboard' => \App\Http\Middleware\StrictDashboardProtection::class,
     ];
 }

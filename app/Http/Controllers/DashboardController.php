@@ -1,21 +1,27 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    // app/Http/Controllers/DashboardController.php
+    public function index(Request $request)
     {
-        // اگر صارف لاگ ان نہیں ہے تو لاگ ان صفحے پر ریڈائرکٹ کریں
-        if (!auth()->check()) {
-            return redirect()->route('login');
+        if (!Auth::check()) {
+            return redirect('/login')->with('error', 'Please login to access dashboard');
         }
 
-        // کیشنگ روکنے کے لیے ہیڈر سیٹ کریں
-        return response()->view('dashboard')
-            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
-            ->header('Pragma', 'no-cache')
-            ->header('Expires', '0');
+        $user = Auth::user();
+
+        return response()
+            ->view('dashboard', compact('user'))
+            ->withHeaders([
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ]);
     }
 }

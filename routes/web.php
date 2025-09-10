@@ -1,11 +1,11 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -17,32 +17,66 @@ Route::get('/sanctum/csrf-cookie', [\Laravel\Sanctum\Http\Controllers\CsrfCookie
 // Auth routes - using web middleware
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [App\Http\Controllers\Auth\LogoutController::class, 'logout'])
+    ->name('logout')
+    ->middleware('auth');
+
 Route::post('/profile/update-picture', [ProfileController::class, 'updatePicture'])->name('profile.updatePicture');
 Route::middleware(['auth', 'role:Admin'])->get('/admin/approved-users', [AuthController::class, 'approved'])->name('admin.approved.users');
 
-// Dashboard route - using auth middleware
-Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard')->middleware('auth');
+// Auth check route
+Route::get('/auth/check', function () {
+    return response()->json([
+        'authenticated' => auth()->check(),
+        'user' => auth()->check() ? auth()->user() : null
+    ]);
+})->middleware('web');
 
-// Admin only routes - fixed middleware
+// API Auth check route - FIXED
+Route::get('/api/auth/check', function () {
+    $user = auth()->user();
+    if ($user) {
+        // Return user data in the format expected by Vue
+        $userData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'status' => $user->status,
+            'picture' => $user->profile_picture, // assuming this is the field name
+        ];
+        return response()->json([
+            'authenticated' => true,
+            'user' => $userData
+        ]);
+    } else {
+        return response()->json([
+            'authenticated' => false,
+            'user' => null
+        ]);
+    }
+})->middleware('web');
+
+// Dashboard route
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+        return view('dashboard', compact('user'));
+    })->name('dashboard');
+});
+
+// Admin only routes
 Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
     // Pending Users
     Route::get('/pending-users', [AdminController::class, 'pendingUsers'])->name('admin.pendingUsers');
     Route::post('/pending-users/approve/{id}', [AdminController::class, 'approvePending'])->name('admin.pending.approve');
     Route::post('/pending-users/reject/{id}', [AdminController::class, 'rejectPending'])->name('admin.pending.reject');
-
+    
     // All Users
     Route::get('/users', [AdminController::class, 'indexUsers'])->name('admin.users');
     Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
     Route::post('/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
 });
-
-// routes/web.php
-Route::get('/api/auth/check', function () {
-    return response()->json(['authenticated' => auth()->check()]);
-})->middleware('web');
-
 
 // Course routes
 Route::middleware(['auth'])->group(function () {

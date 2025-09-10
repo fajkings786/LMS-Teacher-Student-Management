@@ -105,12 +105,28 @@ class AuthController extends Controller
     }
 
     // ✅ Logout - Updated for session authentication
+    // app/Http/Controllers/AuthController.php
+    // app/Http/Controllers/AuthController.php
     public function logout(Request $request)
     {
-        Auth::logout();                     // Laravel logout
-        $request->session()->invalidate();  // Session clear
-        $request->session()->regenerateToken(); // CSRF token regenerate
-        return redirect('/'); // Home pe redirect
+        // Log the user out
+        Auth::logout();
+
+        // Invalidate the session
+        $request->session()->invalidate();
+
+        // Regenerate CSRF token
+        $request->session()->regenerateToken();
+
+        // Clear all cookies related to authentication
+        $request->cookies->remove('laravel_session');
+        $request->cookies->remove('XSRF-TOKEN');
+
+        // Return JSON response for Vue.js
+        return response()->json([
+            'message' => 'Logged out successfully',
+            'redirect' => '/'
+        ]);
     }
     // ✅ Approved Users List
     public function approved()

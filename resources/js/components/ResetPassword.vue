@@ -130,102 +130,196 @@
 </script>
 
 <style scoped>
-  /* Styles remain the same */
   .auth-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #4f46e5, #9333ea);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    overflow: hidden;
   }
-
+  
+  .auth-wrapper::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    animation: pulse 15s infinite ease-in-out;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+    100% { transform: scale(0.8); opacity: 0.5; }
+  }
+  
   .card {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 16px;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     text-align: center;
-    animation: fadeIn 0.6s ease-in-out;
+    animation: fadeIn 0.6s ease-out;
+    position: relative;
+    z-index: 1;
   }
-
+  
   .title {
-    margin-bottom: 1.5rem;
-    color: #4f46e5;
-    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    color: #333;
+    font-size: 1.8rem;
     font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
   }
-
+  
   .input-group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
   }
-
+  
   input {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
+    padding: 16px 20px;
+    border-radius: 12px;
     border: 2px solid #e5e7eb;
     outline: none;
-    font-size: 14px;
+    font-size: 16px;
     transition: all 0.3s ease;
+    background: #f9fafb;
   }
-
+  
   input:focus {
-    border-color: #4f46e5;
-    box-shadow: 0px 0px 6px rgba(79, 70, 229, 0.4);
+    border-color: #667eea;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
   }
-
+  
+  input::placeholder {
+    color: #9ca3af;
+  }
+  
   .alert {
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    animation: slideDown 0.3s ease-out;
   }
-
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .alert::before {
+    content: "";
+    margin-right: 10px;
+    font-size: 16px;
+  }
+  
   .alert.success {
     background: #dcfce7;
     color: #166534;
     border: 1px solid #22c55e;
   }
-
+  
+  .alert.success::before {
+    content: "✓";
+  }
+  
   .alert.error {
     background: #fee2e2;
     color: #991b1b;
     border: 1px solid #ef4444;
   }
-
+  
+  .alert.error::before {
+    content: "⚠";
+  }
+  
   .btn {
-    background: #4f46e5;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 12px;
-    border-radius: 10px;
+    padding: 16px;
+    border-radius: 12px;
     border: none;
     cursor: pointer;
     width: 100%;
     font-weight: 600;
-    transition: background 0.3s ease, transform 0.2s ease;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
-
+  
+  .btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.5s ease;
+  }
+  
+  .btn:hover:not(:disabled)::before {
+    left: 100%;
+  }
+  
   .btn:hover:not(:disabled) {
-    background: #4338ca;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
   }
-
+  
+  .btn:active:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  
   .btn:disabled {
-    opacity: 0.7;
+    background: #a5b4fc;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
-
+  
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(15px);
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .card {
+      padding: 2rem;
+      max-width: 350px;
+    }
+    
+    .title {
+      font-size: 1.6rem;
+    }
+    
+    input {
+      padding: 14px 16px;
     }
   }
 </style>

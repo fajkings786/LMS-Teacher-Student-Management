@@ -12,31 +12,35 @@ use Illuminate\Support\Carbon;
 
 class ForgotPasswordController extends Controller
 {
-    public function sendOtp(Request $request)
-    {
-        try {
-            $request->validate(['email' => 'required|email']);
-            $user = User::where('email', $request->email)->first();
-            if (!$user) {
-                return response()->json(['error' => 'User not found'], 404);
-            }
-            $otp = rand(100000, 999999);
-            $user->otp_code = $otp;
-            $user->otp_expires_at = Carbon::now()->addMinutes(10);
-            $user->save();
-            // Send OTP email
-            Mail::to($user->email)->send(new ForgotPasswordOtp($otp));
-            // Return JSON
-            return response()->json([
-                'message' => 'OTP sent! Check your email.',
-                'redirect' => '/verify-otp-reset?email=' . urlencode($user->email),
-                'email' => $user->email
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Send OTP error: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to send OTP. Please try again.'], 500);
+   public function sendOtp(Request $request)
+{
+    try {
+        $request->validate(['email' => 'required|email']);
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
         }
+        
+        $otp = rand(100000, 999999);
+        $user->otp_code = $otp;
+        $user->otp_expires_at = Carbon::now()->addMinutes(10);
+        $user->save();
+        
+        // Send OTP email - Pass both otp and email
+        Mail::to($user->email)->send(new ForgotPasswordOtp($otp, $user->email));
+        
+        // Return JSON
+        return response()->json([
+            'message' => 'OTP sent! Check your email.',
+            'redirect' => '/verify-otp-reset?email=' . urlencode($user->email),
+            'email' => $user->email
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Send OTP error: ' . $e->getMessage());
+        return response()->json(['error' => 'Failed to send OTP. Please try again.'], 500);
     }
+}
 
     public function verifyOtpReset(Request $request)
     {
