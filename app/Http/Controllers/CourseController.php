@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Course;
@@ -107,9 +106,40 @@ class CourseController extends Controller
 
         return view('courses.teacher.students', compact('students'));
     }
+
+    // Get courses for the authenticated user (API)
+    public function index()
+    {
+        $user = Auth::user();
+        
+        // If the user is a student, get their courses
+        if ($user->role === 'Student') {
+            $courses = Course::with('teacher')
+                ->where('student_id', $user->id)
+                ->get();
+        } else {
+            // For teachers or admins, return all courses they created
+            $courses = Course::with('student')
+                ->where('teacher_id', $user->id)
+                ->get();
+        }
+        
+        // Attach progress status for students
+        if ($user->role === 'Student') {
+            foreach ($courses as $course) {
+                $progress = CourseProgress::where('course_id', $course->id)
+                    ->where('user_id', $user->id)
+                    ->first();
+                $course->status = $progress ? $progress->status : 'pending';
+            }
+        }
+        
+        return response()->json($courses);
+    }
+
     public function userLectures()
     {
-        $lectures = Course::with('Admin') // teacher relation nahi, use Admin
+        $lectures = Course::with('teacher') // Changed from 'Admin' to 'teacher'
             ->where('student_id', auth()->id())
             ->get();
 
@@ -122,8 +152,6 @@ class CourseController extends Controller
 
         return response()->json($lectures);
     }
-
-
 
     // Single student lectures (for teacher)
     public function studentCourses($studentId)
@@ -146,11 +174,38 @@ class CourseController extends Controller
         }
         return $url;
     }
+
     public function lectures()
     {
-        // Fetch all courses with admin relation (who uploaded)
-        $courses = Course::with('admin')->get();
-
+        // Fetch all courses with teacher relation (who uploaded)
+        $courses = Course::with('teacher')->get();
         return response()->json($courses);
+    }
+    
+    // Show a single course
+    public function show($id)
+    {
+        $course = Course::with(['teacher', 'student'])->findOrFail($id);
+        return response()->json($course);
+    }
+    
+    // Get lectures for a specific course
+    public function courseLectures($id)
+    {
+        $course = Course::with(['teacher', 'student'])->findOrFail($id);
+        
+        // For students, check if this is their course
+        if (Auth::user()->role === 'Student' && $course->student_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        
+        // Get progress for this course
+        $progress = CourseProgress::where('course_id', $course->id)
+            ->where('user_id', Auth::id())
+            ->first();
+            
+        $course->status = $progress ? $progress->status : 'pending';
+        
+        return response()->json([$course]); // Return as array for consistency
     }
 }

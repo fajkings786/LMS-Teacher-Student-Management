@@ -22,7 +22,7 @@ class UserApprovedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('🎉 Account Approved - Welcome!')
+        return $this->subject(' Account Approved - Welcome!')
                     ->view('emails.user-approved');
     }
 }

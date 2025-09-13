@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator; // CORRECT
 
 class ProfileController extends Controller
 {
@@ -15,17 +17,66 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
-        // Purani picture delete karna (agar hai)
-        if ($user->profile_picture && file_exists(storage_path('app/public/' . $user->profile_picture))) {
-            unlink(storage_path('app/public/' . $user->profile_picture));
+        // Delete old picture if exists
+        if ($user->profile_picture) {
+            Storage::disk('public')->delete($user->profile_picture);
         }
 
-        // Nayi picture upload
+        // Store new picture
         $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-
         $user->profile_picture = $path;
         $user->save();
 
-        return back()->with('success', 'Profile picture updated successfully!');
+        // Return full URL using Storage::url
+        $pictureUrl = Storage::url($path);
+
+        return response()->json([
+            'success' => true,
+            'picture_url' => $pictureUrl
+        ]);
     }
+
+    public function updateAccount(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'phone' => 'nullable|string|max:20',
+            'bio' => 'nullable|string|max:500',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $user = Auth::user();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->bio = $request->bio;
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Account updated successfully',
+                'user' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'bio' => $user->bio,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update account: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+  
 }

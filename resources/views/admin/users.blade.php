@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="p-6 bg-white shadow-xl rounded-2xl ml-96 transition-all duration-300 hover:shadow-2xl">
+    <div class="p-6 bg-white shadow-xl rounded-2xl ml-96 transition-all duration-300 hover:shadow-2xl w-5/6 relative right-12">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-3xl font-bold text-gray-800 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

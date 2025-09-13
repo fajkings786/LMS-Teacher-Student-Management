@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Approved</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -14,7 +16,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -33,8 +35,9 @@
             background: #fff;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             animation: fadeIn 0.8s ease-out;
+            position: relative;
         }
 
         @keyframes fadeIn {
@@ -50,7 +53,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #4CAF50, #2e7d32);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             padding: 40px 25px;
             text-align: center;
             position: relative;
@@ -91,6 +94,7 @@
             position: relative;
             z-index: 1;
             animation: float 3s ease-in-out infinite;
+            color: #fff;
         }
 
         @keyframes float {
@@ -124,10 +128,9 @@
 
         .greeting {
             font-size: 28px;
-            color: #4CAF50;
             margin-bottom: 20px;
             font-weight: 600;
-            background: linear-gradient(135deg, #4CAF50, #2e7d32);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -141,7 +144,7 @@
         }
 
         .highlight {
-            color: #2e7d32;
+            color: #667eea;
             font-weight: 600;
             position: relative;
             display: inline-block;
@@ -154,18 +157,18 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background: #2e7d32;
+            background: #667eea;
             border-radius: 1px;
         }
 
         .role-container {
             display: inline-block;
-            background: linear-gradient(135deg, #f1f8e9, #e8f5e9);
+            background: linear-gradient(135deg, #f0f4ff, #e6eeff);
             border-radius: 16px;
             padding: 20px 30px;
             margin: 20px 0 30px;
-            border-left: 4px solid #4CAF50;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -177,7 +180,7 @@
             right: 0;
             width: 80px;
             height: 80px;
-            background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0) 70%);
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, rgba(102, 126, 234, 0) 70%);
             border-radius: 50%;
         }
 
@@ -191,7 +194,7 @@
 
         .role-value {
             font-size: 24px;
-            color: #4CAF50;
+            color: #667eea;
             font-weight: 700;
             position: relative;
             z-index: 1;
@@ -204,13 +207,13 @@
         .login-button {
             display: inline-block;
             padding: 18px 40px;
-            background: linear-gradient(135deg, #4CAF50, #2e7d32);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: #fff;
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
             font-size: 16px;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -233,7 +236,7 @@
 
         .login-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
         }
 
         .features {
@@ -251,16 +254,18 @@
             padding: 15px;
             border-radius: 12px;
             transition: all 0.3s ease;
+            background: rgba(102, 126, 234, 0.05);
         }
 
         .feature:hover {
-            background: #f9f9f9;
-            transform: translateY(-3px);
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.1);
         }
 
         .feature-icon {
             font-size: 36px;
-            color: #4CAF50;
+            color: #667eea;
             margin-bottom: 12px;
         }
 
@@ -284,7 +289,7 @@
         }
 
         .footer-links a {
-            color: #4CAF50;
+            color: #667eea;
             text-decoration: none;
             margin: 0 10px;
             font-weight: 500;
@@ -292,7 +297,7 @@
         }
 
         .footer-links a:hover {
-            color: #2e7d32;
+            color: #764ba2;
             text-decoration: underline;
         }
 
@@ -306,7 +311,6 @@
             position: absolute;
             width: 10px;
             height: 10px;
-            background: #4CAF50;
             opacity: 0.7;
         }
 
@@ -403,7 +407,9 @@
 
             <!-- Header -->
             <div class="header">
-                <div class="header-icon">✅</div>
+                <div class="header-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
                 <h1>Account Approved</h1>
             </div>
 
@@ -426,15 +432,21 @@
 
                 <div class="features">
                     <div class="feature">
-                        <div class="feature-icon">📚</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
                         <div class="feature-text">Access Courses</div>
                     </div>
                     <div class="feature">
-                        <div class="feature-icon">📝</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
                         <div class="feature-text">Track Progress</div>
                     </div>
                     <div class="feature">
-                        <div class="feature-icon">💬</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
                         <div class="feature-text">Join Discussions</div>
                     </div>
                 </div>

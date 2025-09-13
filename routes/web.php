@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -20,7 +21,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [App\Http\Controllers\Auth\LogoutController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
-
 Route::post('/profile/update-picture', [ProfileController::class, 'updatePicture'])->name('profile.updatePicture');
 Route::middleware(['auth', 'role:Admin'])->get('/admin/approved-users', [AuthController::class, 'approved'])->name('admin.approved.users');
 
@@ -32,17 +32,16 @@ Route::get('/auth/check', function () {
     ]);
 })->middleware('web');
 
-// API Auth check route - FIXED
+// API Auth check route
 Route::get('/api/auth/check', function () {
     $user = auth()->user();
     if ($user) {
-        // Return user data in the format expected by Vue
         $userData = [
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role,
             'status' => $user->status,
-            'picture' => $user->profile_picture, // assuming this is the field name
+            'picture' => $user->profile_picture,
         ];
         return response()->json([
             'authenticated' => true,
@@ -94,6 +93,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendance/export/csv', [AttendanceController::class, 'exportCsv'])->name('attendance.export.csv');
     Route::get('/attendance/export/pdf', [AttendanceController::class, 'exportPdf'])->name('attendance.export.pdf');
 });
+
+// Chat routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/create', [ChatController::class, 'create'])->name('chat.create');
+    Route::post('/chat', [ChatController::class, 'store'])->name('chat.store');
+    Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{id}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/{id}/messages', [ChatController::class, 'fetchMessages'])->name('chat.fetch');
+});
+
+// Notification routes
+Route::get('/notifications', [ChatController::class, 'getNotifications'])->name('notifications.get');
+Route::post('/notifications/{id}/read', [ChatController::class, 'markNotificationAsRead'])->name('notifications.read');
 
 // Results routes
 Route::middleware(['auth'])->group(function () {

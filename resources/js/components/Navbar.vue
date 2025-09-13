@@ -36,8 +36,14 @@
         <!-- Profile Dropdown for Logged-in Users -->
         <div v-else class="profile-dropdown">
           <div class="profile-trigger" @click="toggleProfileDropdown">
+            <!-- Navbar.vue mein profile avatar -->
             <div class="profile-avatar">
-              <img v-if="userProfile.picture" :src="userProfile.picture" alt="Profile" />
+              <img 
+                v-if="userProfile.picture" 
+                :src="getFullImageUrl(userProfile.picture)" 
+                alt="Profile" 
+                @error="handleImageError"
+              />
               <span v-else class="avatar-placeholder">{{ userInitials }}</span>
             </div>
             <span class="profile-name">{{ userProfile.name || "User" }}</span>
@@ -48,8 +54,9 @@
               <div class="dropdown-avatar">
                 <img
                   v-if="userProfile.picture"
-                  :src="userProfile.picture"
+                  :src="getFullImageUrl(userProfile.picture)"
                   alt="Profile"
+                  @error="handleImageError"
                 />
                 <span v-else class="avatar-placeholder">{{ userInitials }}</span>
               </div>
@@ -110,7 +117,6 @@
 <script>
   import { ref, computed, onMounted, onUnmounted, watch } from "vue";
   import { useRouter, useRoute } from "vue-router";
-  
   export default {
     name: "Navbar",
     setup() {
@@ -121,7 +127,6 @@
       const showNotification = ref(false);
       const notificationMessage = ref("");
       const isCheckingAuth = ref(true);
-      
       // User state
       const userProfile = ref({
         name: "",
@@ -130,7 +135,6 @@
         status: "",
         picture: null,
       });
-      
       // Force update key to force re-render when user logs in
       const forceUpdateKey = ref(0);
       
@@ -157,6 +161,29 @@
           .substring(0, 2)
           .toUpperCase();
       });
+      
+      // Get full image URL
+      const getFullImageUrl = (picture) => {
+        if (!picture) return null;
+        
+        // If it's already a full URL, return as is
+        if (picture.startsWith('http://') || picture.startsWith('https://')) {
+          return picture;
+        }
+        
+        // If it starts with /storage/, it's already correct
+        if (picture.startsWith('/storage/')) {
+          return picture;
+        }
+        
+        // If it starts with storage/, add leading slash
+        if (picture.startsWith('storage/')) {
+          return `/${picture}`;
+        }
+        
+        // If it's a relative path, add /storage/ prefix
+        return `/storage/${picture}`;
+      };
       
       // Methods
       const toggleMenu = () => {
@@ -198,11 +225,9 @@
             },
             credentials: "include",
           });
-          
           // Clear local storage
           localStorage.removeItem("userData");
           sessionStorage.clear();
-          
           // Reset user profile
           userProfile.value = {
             name: "",
@@ -211,12 +236,9 @@
             status: "",
             picture: null,
           };
-          
           // Emit logout event
           window.dispatchEvent(new Event("userLoggedOut"));
-          
           showNotificationMessage("Logged out successfully");
-          
           // Redirect to login page
           setTimeout(() => {
             router.push("/login");
@@ -231,24 +253,20 @@
         console.log("Loading user data from localStorage");
         const userData = localStorage.getItem("userData");
         console.log("User data from localStorage:", userData);
-        
         if (userData) {
           try {
             // Parse the user data
             const parsedData = JSON.parse(userData);
             console.log("Parsed user data:", parsedData);
-            
             // Update the userProfile reactive object
             userProfile.value = {
               name: parsedData.name || "",
               email: parsedData.email || "",
               role: parsedData.role || "",
               status: parsedData.status || "",
-              picture: parsedData.picture || null,
+              picture: getFullImageUrl(parsedData.picture),
             };
-            
             console.log("Updated userProfile:", userProfile.value);
-            
             // Force update
             forceUpdateKey.value += 1;
           } catch (e) {
@@ -262,20 +280,17 @@
         try {
           isCheckingAuth.value = true;
           console.log("Checking auth status from server");
-          
-          const response = await fetch('/api/auth/check', {
-            method: 'GET',
+          const response = await fetch("/api/auth/check", {
+            method: "GET",
             headers: {
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest'
+              Accept: "application/json",
+              "X-Requested-With": "XMLHttpRequest",
             },
-            credentials: 'include'
+            credentials: "include",
           });
-          
           if (response.ok) {
             const data = await response.json();
             console.log("Auth check response:", data);
-            
             if (data.authenticated && data.user) {
               // Update userProfile reactive object
               userProfile.value = {
@@ -283,12 +298,10 @@
                 email: data.user.email || "",
                 role: data.user.role || "",
                 status: data.user.status || "",
-                picture: data.user.picture || null, // Fixed field name
+                picture: getFullImageUrl(data.user.picture), // Fixed field name
               };
-              
               // Update localStorage with fresh data
               localStorage.setItem("userData", JSON.stringify(userProfile.value));
-              
               console.log("User authenticated from server:", data.user);
             } else {
               // Clear localStorage if not authenticated
@@ -331,17 +344,13 @@
             email: event.detail.email || "",
             role: event.detail.role || "",
             status: event.detail.status || "",
-            picture: event.detail.picture || null,
+            picture: getFullImageUrl(event.detail.picture),
           };
-          
           // Also save to localStorage
           localStorage.setItem("userData", JSON.stringify(userProfile.value));
-          
           console.log("Updated userProfile from event:", userProfile.value);
-          
           // Show welcome notification
           showNotificationMessage(`Welcome back, ${userProfile.value.name}!`);
-          
           // Force update
           forceUpdateKey.value += 1;
         }
@@ -353,7 +362,6 @@
         // Clear all storage
         localStorage.clear();
         sessionStorage.clear();
-        
         // Reset user profile
         userProfile.value = {
           name: "",
@@ -362,12 +370,32 @@
           status: "",
           picture: null,
         };
-        
         // Force update
         forceUpdateKey.value += 1;
-        
         // Close menus
         closeAllMenus();
+      };
+      
+      // Listen for profile picture update event
+      const handleProfileUpdate = (event) => {
+        console.log("Profile update event received:", event.detail);
+        if (event.detail && event.detail.picture) {
+          userProfile.value.picture = event.detail.picture;
+          
+          // Update localStorage
+          const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+          userData.picture = event.detail.picture;
+          localStorage.setItem("userData", JSON.stringify(userData));
+          
+          console.log("Navbar profile picture updated to:", event.detail.picture);
+        }
+      };
+      
+      // Handle image loading error
+      const handleImageError = (event) => {
+        console.error("Failed to load navbar profile image:", event.target.src);
+        // Fallback to placeholder
+        userProfile.value.picture = null;
       };
       
       // Listen for storage changes
@@ -382,16 +410,14 @@
       // Load user data on component mount
       onMounted(async () => {
         console.log("Navbar mounted");
-        
         // First try to load from localStorage immediately
         loadUserData();
-        
         // Then check auth status from server
         await checkAuthStatus();
-        
         // Set up event listeners
         window.addEventListener("userLoggedIn", handleUserLoggedIn);
         window.addEventListener("userLoggedOut", handleUserLoggedOut);
+        window.addEventListener("userProfileUpdated", handleProfileUpdate);
         window.addEventListener("storage", handleStorageChange);
       });
       
@@ -399,6 +425,7 @@
       onUnmounted(() => {
         window.removeEventListener("userLoggedIn", handleUserLoggedIn);
         window.removeEventListener("userLoggedOut", handleUserLoggedOut);
+        window.removeEventListener("userProfileUpdated", handleProfileUpdate);
         window.removeEventListener("storage", handleStorageChange);
       });
       
@@ -426,6 +453,8 @@
         toggleProfileDropdown,
         closeAllMenus,
         handleLogout,
+        handleImageError,
+        getFullImageUrl,
       };
     },
   };

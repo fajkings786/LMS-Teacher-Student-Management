@@ -19,7 +19,7 @@ class UserRejectedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('❌ Account Rejected')
+        return $this->subject(' Account Rejected')
                     ->view('emails.user-rejected');
     }
 }

@@ -12,6 +12,7 @@ import ResetPassword from "../components/ResetPassword.vue";
 import Course from "../pages/Course.vue";
 import CreateCourse from "../pages/CreateCourse.vue";
 import Contact from "../pages/Contact.vue";
+import Profile from "../pages/Profile.vue";
 
 const routes = [
     { path: "/", name: "home", component: Home },
@@ -24,6 +25,7 @@ const routes = [
     { path: "/courses/create", name: "createCourse", component: CreateCourse },
     { path: "/contact", name: "contact", component: Contact },
     { path: "/courses", name: "courses", component: Lectures },
+    { path: "/profile", name: "profile", component: Profile },
     {
         path: "/forgot-password",
         name: "ForgotPassword",
