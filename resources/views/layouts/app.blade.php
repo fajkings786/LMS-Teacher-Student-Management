@@ -17,12 +17,12 @@
     <!-- Before closing body tag -->
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.3/dist/echo.iife.min.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> --}}
 
     <style>
         body {
             background-color: #f8fafc;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
         }
 
         /* Custom scrollbar */
@@ -86,8 +86,9 @@
 <body class="bg-gray-50 text-gray-900">
     {{-- Vue Components --}}
     @include('layouts.sidebar')
-    {{-- Laravel Blade Content --}}
-    <div class="container mx-auto p-8">
+    
+    {{-- Main Content Area --}}
+    <div class="flex-1 overflow-auto">
         @yield('content')
     </div>
 
@@ -108,7 +109,6 @@
             }
         );
     </script>
-</body>
 </body>
 
 </html>

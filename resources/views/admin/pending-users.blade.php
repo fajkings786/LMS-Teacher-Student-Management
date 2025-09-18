@@ -14,8 +14,7 @@
             margin-left: 288px; /* w-72 = 18rem = 288px */
             padding: 24px;
             position: relative;
-            
-            /* min-height: 100vh; */
+            min-height: 100vh;
         }
         
         .header {
@@ -23,6 +22,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
         
         h1 {
@@ -48,57 +49,73 @@
         .stats {
             display: flex;
             gap: 20px;
+            flex-wrap: wrap;
         }
         
         .stat-card {
             background: white;
             border-radius: 12px;
-            padding: 15px 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             display: flex;
             align-items: center;
-            gap: 12px;
-            min-width: 150px;
+            gap: 15px;
+            min-width: 180px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
         
         .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
+            transition: all 0.3s ease;
         }
         
         .stat-icon.pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
         }
         
         .stat-icon.today {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
         
         .stat-content h3 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #1e293b;
         }
         
         .stat-content p {
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #64748b;
+            font-weight: 500;
         }
         
         .table-container {
             background: white;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .table-container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
         }
         
         table {
@@ -107,22 +124,24 @@
         }
         
         th, td {
-            padding: 16px 20px;
+            padding: 18px 24px;
             text-align: left;
         }
         
         th {
-            background: #f8fafc;
+            background: linear-gradient(to right, #f8fafc, #f1f5f9);
             font-weight: 600;
             color: #475569;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            border-bottom: 2px solid #e2e8f0;
         }
         
         td {
             border-bottom: 1px solid #f1f5f9;
             color: #334155;
+            font-weight: 500;
         }
         
         tr:last-child td {
@@ -136,12 +155,12 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
         
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             display: flex;
@@ -149,41 +168,54 @@
             justify-content: center;
             color: white;
             font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
         }
         
         .user-details h4 {
             margin: 0;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            color: #1e293b;
         }
         
         .user-details p {
             margin: 0;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #64748b;
         }
         
         .role-badge {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
         }
         
         .role-badge.pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            box-shadow: 0 2px 5px rgba(245, 158, 11, 0.2);
         }
         
         .role-badge.teacher {
-            background: rgba(99, 102, 241, 0.1);
-            color: #6366f1;
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            color: #3730a3;
+            box-shadow: 0 2px 5px rgba(99, 102, 241, 0.2);
         }
         
         .role-badge.student {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.2);
         }
         
         .date {
@@ -193,36 +225,46 @@
         
         .action-form {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             align-items: center;
+            flex-wrap: wrap;
         }
         
         .role-select {
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
             border: 1px solid #e2e8f0;
             background: white;
             color: #334155;
             font-size: 0.85rem;
-            min-width: 120px;
+            min-width: 140px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .role-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            outline: none;
         }
         
         .btn {
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 10px 18px;
+            border-radius: 10px;
             border: none;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.85rem;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
         
         .btn.approve {
@@ -230,40 +272,122 @@
             color: white;
         }
         
+        .btn.approve:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        
         .btn.reject {
             background: linear-gradient(135deg, #ef4444, #f43f5e);
             color: white;
         }
         
+        .btn.reject:hover {
+            background: linear-gradient(135deg, #dc2626, #e11d48);
+        }
+        
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
             color: #64748b;
         }
         
         .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 4rem;
+            margin-bottom: 20px;
             color: #cbd5e1;
+            opacity: 0.7;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            font-size: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
         
         .alert {
-            padding: 15px 20px;
+            padding: 18px 24px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .alert.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            border-left: 4px solid #10b981;
+            background: linear-gradient(to right, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border-left: 5px solid #10b981;
         }
         
         .alert-icon {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .stat-card {
+                min-width: 150px;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 700px;
+            }
+            
+            .action-form {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .stats {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
         }
     </style>
     
